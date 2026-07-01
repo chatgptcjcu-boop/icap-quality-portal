@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="iCAP 品質文件檢核專家儀表板 — 職能基準與職能導向課程審查輔導入口">
+<title>iCAP 品質文件檢核專家儀表板｜入口網</title>
+<style>
+:root {
+  --bg: #0c1222;
+  --surface: #151d33;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #7c3aed;
+  --accent2: #2563eb;
+  --red: #dc2626;
+  --blue: #1d4ed8;
+  --green: #16a34a;
+  --grad: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e3a8a 100%);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  background: #eef2ff;
+  color: var(--text);
+  min-height: 100vh;
+}
+.hero {
+  background: var(--grad);
+  color: #fff;
+  padding: 2.5rem 1.5rem 3rem;
+  text-align: center;
+}
+.hero-inner { max-width: 820px; margin: 0 auto; }
+.hero .tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  margin-bottom: 1rem;
+}
+.hero h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.6rem, 4vw, 2.35rem);
+  line-height: 1.25;
+  font-weight: 800;
+}
+.hero p {
+  margin: 0 auto;
+  max-width: 36em;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: #c7d2fe;
+}
+.hero-actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.35rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+.btn-primary {
+  background: #fff;
+  color: #312e81;
+}
+.btn-ghost {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+}
+.wrap { max-width: 1000px; margin: -2rem auto 0; padding: 0 1.25rem 3rem; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.stat {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(15,23,42,.08);
+  border: 1px solid var(--border);
+}
+.stat .v { font-size: 1.75rem; font-weight: 800; color: var(--accent); }
+.stat .l { font-size: 0.78rem; color: var(--muted); margin-top: 0.25rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 4px 16px rgba(15,23,42,.07);
+  border: 1px solid var(--border);
+}
+.card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card p { margin: 0 0 1rem; font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+.card ul {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+.card .btn-sm {
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+}
+.badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  color: #fff;
+}
+.badge-red { background: var(--red); }
+.badge-blue { background: var(--blue); }
+.badge-green { background: var(--green); }
+.badge-purple { background: var(--accent); }
+.footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+.footer a { color: var(--accent2); }
+@media (max-width: 600px) {
+  .hero { padding: 2rem 1rem 2.5rem; }
+  .wrap { margin-top: -1.25rem; }
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="tag">iCAP · 品質認證輔導</div>
+    <h1>品質文件檢核專家儀表板</h1>
+    <p>模擬審核委員會視角，依勞動部官方 I-P-O／ADDIE 指標檢核職能基準與職能導向課程。紅隊質疑、藍隊辯護、標竿對照，三隊長自動產出審查報告。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="quality-review/index.html">進入儀表板 →</a>
+      <a class="btn btn-ghost" href="quality-review/review-board.html">三隊長審查會議</a>
+      <a class="btn btn-ghost" href="https://github.com/chatgptcjcu-boop/icap-quality-portal" target="_blank" rel="noopener">GitHub 儲存庫</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stats">
+    <div class="stat"><div class="v">21</div><div class="l">OCS 檢核項</div></div>
+    <div class="stat"><div class="v">15</div><div class="l">課程 ADDIE 項</div></div>
+    <div class="stat"><div class="v">75</div><div class="l">宮廟管理師檔案</div></div>
+    <div class="stat"><div class="v">3</div><div class="l">審查隊長視角</div></div>
+  </div>
+
+  <div class="grid">
+    <article class="card">
+      <h2><span class="badge badge-purple">主系統</span> 品質審查儀表板</h2>
+      <p>職能基準 21 項＋課程 ADDIE 15 項檢核，評分存於瀏覽器，可匯出 JSON 與補正行動計畫。</p>
+      <ul>
+        <li>儀表板總覽與綜合評分</li>
+        <li>OCS／課程逐項檢核表</li>
+        <li>宮廟管理師 GitHub 文件庫對照</li>
+      </ul>
+      <a class="btn btn-sm" href="quality-review/index.html">開啟儀表板</a>
+    </article>
+
+    <article class="card">
+      <h2><span class="badge badge-red">紅隊</span> <span class="badge badge-blue">藍隊</span> <span class="badge badge-green">標竿</span> 三隊長會議</h2>
+      <p>開啟頁面即自動產生三份審查報告與綜合會議紀錄，可下載 Markdown。</p>
+      <ul>
+        <li>紅隊：致命缺口與 7 日補正風險</li>
+        <li>藍隊：通過路徑與辯護話術</li>
+        <li>標竿：icapV72 官方對照差距</li>
+      </ul>
+      <a class="btn btn-sm" href="quality-review/review-board.html">查看審查報告</a>
+    </article>
+
+    <article class="card">
+      <h2><span class="badge badge-blue">輔助</span> 補正與商業模組</h2>
+      <p>依低分項目自動產出補正清單，並提供顧問接案缺口報告框架。</p>
+      <ul>
+        <li><a href="quality-review/action-plan.html">補正行動計畫</a></li>
+        <li><a href="quality-review/commercial.html">商業接案模組</a></li>
+        <li><a href="quality-review/documents.html">宮廟管理師文件庫</a></li>
+      </ul>
+      <a class="btn btn-sm" href="quality-review/action-plan.html">補正行動計畫</a>
+    </article>
+  </div>
+
+  <div class="footer">
+    <p>權威依據：勞動部 iCAP 職能基準／課程品質認證作業手冊 · 審查標的：宮廟管理師（icap-zhineng-jizhun）</p>
+    <p>入口網更新：2026-07-02 · 線上網址：<a href="https://chatgptcjcu-boop.github.io/icap-quality-portal/">https://chatgptcjcu-boop.github.io/icap-quality-portal/</a></p>
+    <p>本地重建：<code>make portal</code></p>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三隊長審查會議｜iCAP 品質審查輔導系統</title>
+<style>
+:root {
+  --bg: #0c1222; --sidebar: #151d33; --card: #fff; --text: #1e293b;
+  --muted: #64748b; --border: #e2e8f0; --accent: #7c3aed;
+  --red: #b91c1c; --blue: #1d4ed8; --green: #15803d;
+  --pass: #16a34a; --warn: #ca8a04; --fail: #dc2626;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "PingFang TC", "Noto Sans TC", sans-serif; background: #eef2ff; color: var(--text); }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 250px; background: var(--sidebar); color: #e2e8f0; padding: 1rem 0; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar .brand { font-size: 1rem; color: #fff; padding: 0 1.25rem 1rem; border-bottom: 1px solid #334155; margin-bottom: 0.5rem; line-height: 1.45; }
+.sidebar nav a { display: block; padding: 0.5rem 1.25rem; color: #cbd5e1; text-decoration: none; font-size: 0.88rem; border-left: 3px solid transparent; }
+.sidebar nav a:hover, .sidebar nav a.active { background: #1e293b; color: #fff; border-left-color: var(--accent); }
+.main { flex: 1; padding: 1.25rem 1.75rem 3rem; max-width: 1200px; }
+h2 { margin-top: 0; font-size: 1.45rem; }
+h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+.card { background: var(--card); border-radius: 12px; padding: 1.15rem 1.35rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.65rem; margin: 1rem 0; }
+.stat { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem; text-align: center; }
+.stat .v { font-size: 1.6rem; font-weight: 800; }
+.stat .l { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+.stat.pass .v { color: var(--pass); }
+.stat.warn .v { color: var(--warn); }
+.stat.fail .v { color: var(--fail); }
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+.badge { display: inline-block; padding: 0.12rem 0.45rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; color: #fff; }
+.badge-critical { background: var(--fail); }
+.badge-aspect { background: #6366f1; }
+.badge-red { background: var(--red); }
+.badge-blue { background: var(--blue); }
+.badge-green { background: var(--green); }
+.score-input { width: 3.5rem; padding: 0.25rem; text-align: center; border: 1px solid var(--border); border-radius: 6px; }
+textarea.note { width: 100%; min-height: 56px; padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.85rem; }
+.btn { padding: 0.45rem 0.95rem; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-right: 0.4rem; margin-top: 0.35rem; }
+.btn:hover { opacity: 0.92; }
+.btn-outline { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+.callout { border-left: 4px solid var(--accent); background: #f5f3ff; padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.9rem; }
+.callout-red { border-color: var(--red); background: #fef2f2; }
+.callout-blue { border-color: var(--blue); background: #eff6ff; }
+.callout-green { border-color: var(--green); background: #f0fdf4; }
+.meter { height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 0.35rem 0; }
+.meter > span { display: block; height: 100%; background: linear-gradient(90deg, #7c3aed, #2563eb); border-radius: 999px; transition: width .3s; }
+.captain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.captain-card { border-radius: 10px; padding: 1rem; color: #fff; }
+.captain-card h4 { margin: 0 0 0.5rem; }
+.captain-card ul { margin: 0; padding-left: 1.1rem; font-size: 0.85rem; line-height: 1.5; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.filters input, .filters select { padding: 0.35rem 0.55rem; border: 1px solid var(--border); border-radius: 6px; }
+.doc-row { font-size: 0.82rem; }
+.report-body { font-size: 0.88rem; line-height: 1.65; }
+.report-body h4 { margin: 0.85rem 0 0.35rem; font-size: 0.95rem; }
+.report-body ul, .report-body ol { margin: 0.35rem 0; padding-left: 1.25rem; }
+.report-body p { margin: 0.35rem 0; }
+.report-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+footer.page-foot { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+@media (max-width: 768px) { .layout { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } }
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand">iCAP 品質審查<br><small style="color:#94a3b8;font-weight:400">檢核專家儀表板</small></div>
+<nav><a href="../index.html" style="border-left-color:#f59e0b;color:#fcd34d">← 入口網</a>
+<a href="index.html" class="">儀表板總覽</a>
+<a href="ocs-review.html" class="">職能基準檢核</a>
+<a href="course-review.html" class="">職能導向課程檢核</a>
+<a href="review-board.html" class="active">三隊長審查會議</a>
+<a href="documents.html" class="">宮廟管理師文件庫</a>
+<a href="action-plan.html" class="">補正行動計畫</a>
+<a href="commercial.html" class="">商業接案模組</a></nav>
+</aside>
+<main class="main">
+
+<h2>三隊長審查會議</h2>
+<div class="callout">開啟本頁即<strong>自動產生</strong>三隊長審查報告（依 OCS／課程檢核評分或宮廟管理師文件初評）。調整評分後請按「重新產生報告」。</div>
+<div class="captain-grid"><div class="captain-card" style="background:#7f1d1d">
+<h4><span class="badge badge-red">紅隊隊長</span></h4>
+<p style="font-size:0.85rem;opacity:.9">嚴格審查委員／補正風險獵手</p>
+<p style="font-size:0.82rem"><em>假設不通過，專找缺證、矛盾、不可稽核之處</em></p>
+<ul><li>佐證資料是否可追溯到原始來源？引用是否過時？</li><li>利益關係人名單是否達 3 年以上資深占 6 成？是否有簽到／訪談紀錄？</li><li>工作描述是否與其他職類重疊？行為指標是否可測量？</li><li>課程 ADDIE 各階段是否有對應文件？試教紀錄是否完整？</li><li>若被要求 7 日內補正，哪些項目無法在期限內完成？</li></ul>
+<p style="font-size:0.8rem;margin-top:0.75rem">任一關鍵指標未達 4 分，建議列為高風險補正項</p>
+</div><div class="captain-card" style="background:#1e3a8a">
+<h4><span class="badge badge-blue">藍隊隊長</span></h4>
+<p style="font-size:0.85rem;opacity:.9">申請單位首席顧問／通過路徑設計</p>
+<p style="font-size:0.82rem"><em>在符合官方指標前提下，最大化可辯護性與證據鏈完整性</em></p>
+<ul><li>每一要求條件是否已對應報告書章節頁碼？</li><li>自我檢核表是否全數勾選並附佐證？</li><li>產業需求面是否已連結政策、法規、人力統計三類證據？</li><li>職能分析 DACUM／訪談／驗證是否形成閉環？</li><li>課程評量是否對應行為指標且具學習成果證據？</li></ul>
+<p style="font-size:0.8rem;margin-top:0.75rem">全數指標自評符合且頁碼對照完整，可爭取一次通過</p>
+</div><div class="captain-card" style="background:#14532d">
+<h4><span class="badge badge-green">標竿隊長</span></h4>
+<p style="font-size:0.85rem;opacity:.9">已通過案例／官方範例對照官</p>
+<p style="font-size:0.82rem"><em>對照 iCAP 官方手冊範例、同領域通過案例、平台公告 OCS</em></p>
+<ul><li>體例是否對齊附件 2-2 職能基準表格式？</li><li>是否參照《職能導向課程發展示範說明》之 ADDIE 文件結構？</li><li>與 icapV72 自我檢核表欄位是否一一對應？</li><li>課程地圖、模組講義、評量計畫是否形成三角證據？</li><li>個人及社會服務領域既有 OCS 之表述深度是否達標？</li></ul>
+<p style="font-size:0.8rem;margin-top:0.75rem">對照標竿差距 ≤1 分者，列為優先補強而非致命缺失</p>
+</div></div>
+
+<div class="card" style="margin-top:1.25rem">
+<h3>審查評分摘要</h3>
+<div class="stats">
+  <div class="stat pass"><div class="v" id="board-overall">—</div><div class="l">綜合評分</div></div>
+  <div class="stat"><div class="v" id="board-ocs">—</div><div class="l">OCS 均分</div></div>
+  <div class="stat"><div class="v" id="board-course">—</div><div class="l">課程均分</div></div>
+  <div class="stat fail"><div class="v" id="board-gaps">—</div><div class="l">未達 4 分項</div></div>
+</div>
+<p class="report-meta" id="report-meta">報告產生中…</p>
+<button class="btn" type="button" onclick="generateCaptainReports()">重新產生報告</button>
+<button class="btn btn-outline" type="button" onclick="downloadCaptainReportMd()">下載 Markdown 報告</button>
+<a class="btn btn-outline" href="ocs-review.html" style="text-decoration:none;display:inline-block">調整 OCS 評分</a>
+<a class="btn btn-outline" href="course-review.html" style="text-decoration:none;display:inline-block">調整課程評分</a>
+</div>
+
+<div class="card callout-red">
+<h3><span class="badge badge-red">紅隊隊長</span> 審查報告</h3>
+<div id="report-red" class="report-body"><p>產生中…</p></div>
+</div>
+<div class="card callout-blue">
+<h3><span class="badge badge-blue">藍隊隊長</span> 審查報告</h3>
+<div id="report-blue" class="report-body"><p>產生中…</p></div>
+</div>
+<div class="card callout-green">
+<h3><span class="badge badge-green">標竿隊長</span> 審查報告</h3>
+<div id="report-benchmark" class="report-body"><p>產生中…</p></div>
+</div>
+
+<div class="card" style="margin-top:1.25rem">
+<h3>綜合會議紀錄（自動產生，可編輯）</h3>
+<textarea class="note" id="board-minutes" style="min-height:200px" placeholder="開啟頁面後自動填入三隊長會議紀錄…"></textarea>
+</div>
+
+<footer class="page-foot">權威依據：勞動部 iCAP 職能基準／課程品質認證作業手冊 · 審查標的：宮廟管理師（icap-zhineng-jizhun）</footer>
+</main>
+</div>
+<script src="data/review-engine.js"></script>
+
+</body>
+</html>

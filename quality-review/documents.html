@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宮廟管理師文件庫｜iCAP 品質審查輔導系統</title>
+<style>
+:root {
+  --bg: #0c1222; --sidebar: #151d33; --card: #fff; --text: #1e293b;
+  --muted: #64748b; --border: #e2e8f0; --accent: #7c3aed;
+  --red: #b91c1c; --blue: #1d4ed8; --green: #15803d;
+  --pass: #16a34a; --warn: #ca8a04; --fail: #dc2626;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "PingFang TC", "Noto Sans TC", sans-serif; background: #eef2ff; color: var(--text); }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 250px; background: var(--sidebar); color: #e2e8f0; padding: 1rem 0; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar .brand { font-size: 1rem; color: #fff; padding: 0 1.25rem 1rem; border-bottom: 1px solid #334155; margin-bottom: 0.5rem; line-height: 1.45; }
+.sidebar nav a { display: block; padding: 0.5rem 1.25rem; color: #cbd5e1; text-decoration: none; font-size: 0.88rem; border-left: 3px solid transparent; }
+.sidebar nav a:hover, .sidebar nav a.active { background: #1e293b; color: #fff; border-left-color: var(--accent); }
+.main { flex: 1; padding: 1.25rem 1.75rem 3rem; max-width: 1200px; }
+h2 { margin-top: 0; font-size: 1.45rem; }
+h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+.card { background: var(--card); border-radius: 12px; padding: 1.15rem 1.35rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.65rem; margin: 1rem 0; }
+.stat { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem; text-align: center; }
+.stat .v { font-size: 1.6rem; font-weight: 800; }
+.stat .l { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+.stat.pass .v { color: var(--pass); }
+.stat.warn .v { color: var(--warn); }
+.stat.fail .v { color: var(--fail); }
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+.badge { display: inline-block; padding: 0.12rem 0.45rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; color: #fff; }
+.badge-critical { background: var(--fail); }
+.badge-aspect { background: #6366f1; }
+.badge-red { background: var(--red); }
+.badge-blue { background: var(--blue); }
+.badge-green { background: var(--green); }
+.score-input { width: 3.5rem; padding: 0.25rem; text-align: center; border: 1px solid var(--border); border-radius: 6px; }
+textarea.note { width: 100%; min-height: 56px; padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.85rem; }
+.btn { padding: 0.45rem 0.95rem; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-right: 0.4rem; margin-top: 0.35rem; }
+.btn:hover { opacity: 0.92; }
+.btn-outline { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+.callout { border-left: 4px solid var(--accent); background: #f5f3ff; padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.9rem; }
+.callout-red { border-color: var(--red); background: #fef2f2; }
+.callout-blue { border-color: var(--blue); background: #eff6ff; }
+.callout-green { border-color: var(--green); background: #f0fdf4; }
+.meter { height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 0.35rem 0; }
+.meter > span { display: block; height: 100%; background: linear-gradient(90deg, #7c3aed, #2563eb); border-radius: 999px; transition: width .3s; }
+.captain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.captain-card { border-radius: 10px; padding: 1rem; color: #fff; }
+.captain-card h4 { margin: 0 0 0.5rem; }
+.captain-card ul { margin: 0; padding-left: 1.1rem; font-size: 0.85rem; line-height: 1.5; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.filters input, .filters select { padding: 0.35rem 0.55rem; border: 1px solid var(--border); border-radius: 6px; }
+.doc-row { font-size: 0.82rem; }
+.report-body { font-size: 0.88rem; line-height: 1.65; }
+.report-body h4 { margin: 0.85rem 0 0.35rem; font-size: 0.95rem; }
+.report-body ul, .report-body ol { margin: 0.35rem 0; padding-left: 1.25rem; }
+.report-body p { margin: 0.35rem 0; }
+.report-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+footer.page-foot { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+@media (max-width: 768px) { .layout { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } }
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand">iCAP 品質審查<br><small style="color:#94a3b8;font-weight:400">檢核專家儀表板</small></div>
+<nav><a href="../index.html" style="border-left-color:#f59e0b;color:#fcd34d">← 入口網</a>
+<a href="index.html" class="">儀表板總覽</a>
+<a href="ocs-review.html" class="">職能基準檢核</a>
+<a href="course-review.html" class="">職能導向課程檢核</a>
+<a href="review-board.html" class="">三隊長審查會議</a>
+<a href="documents.html" class="active">宮廟管理師文件庫</a>
+<a href="action-plan.html" class="">補正行動計畫</a>
+<a href="commercial.html" class="">商業接案模組</a></nav>
+</aside>
+<main class="main">
+
+<h2>宮廟管理師文件庫</h2>
+<div class="callout">來源：<a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun" target="_blank">icap-zhineng-jizhun</a> · 家用電腦職能基準上傳區</div>
+<p>共 <strong>75</strong> 個檔案。審查時請對照輔導計畫書 icapV74、品質檢核表 icapV72ck、模組講義 M1–M8。</p>
+<h3>01-輔導計畫書（18）</h3><table><tbody><tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/最新版/icapV74.html" target="_blank">icapV74.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/最新版/icapV74.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV53.html" target="_blank">icapV53.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV53.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV54.html" target="_blank">icapV54.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV54.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV60.html" target="_blank">icapV60.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV60.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV61.html" target="_blank">icapV61.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV61.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV62.html" target="_blank">icapV62.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV62.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV63.html" target="_blank">icapV63.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV63.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV64.html" target="_blank">icapV64.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV64.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV65.html" target="_blank">icapV65.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV65.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV65.txt" target="_blank">icapV65.txt</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV65.txt</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV66.html" target="_blank">icapV66.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV66.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV67.html" target="_blank">icapV67.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV67.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV68.html" target="_blank">icapV68.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV68.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV70.html" target="_blank">icapV70.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV70.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV71.html" target="_blank">icapV71.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV71.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV72.html" target="_blank">icapV72.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV72.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapV73.html" target="_blank">icapV73.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapV73.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/01-輔導計畫書/歷史版本/icapv52.html" target="_blank">icapv52.html</a></td><td><code>01-寺廟管理師/01-輔導計畫書/歷史版本/icapv52.html</code></td></tr></tbody></table><h3>02-專業講義-模組（39）</h3><table><tbody><tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM1.html" target="_blank">icap-TextBookM1.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM1.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM2.html" target="_blank">icap-TextBookM2.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM2.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM3.html" target="_blank">icap-TextBookM3.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM3.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM4.html" target="_blank">icap-TextBookM4.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM4.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM5.html" target="_blank">icap-TextBookM5.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM5.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM6.html" target="_blank">icap-TextBookM6.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM6.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM7.html" target="_blank">icap-TextBookM7.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM7.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM8.html" target="_blank">icap-TextBookM8.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM8.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M1.html" target="_blank">M1.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M1.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M5.html" target="_blank">M5.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M5.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M5b.html" target="_blank">M5b.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M5b.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M5c.html" target="_blank">M5c.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/M5c.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM1999.html" target="_blank">icap-TextBookM1999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM1999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM1aaaa.html" target="_blank">icap-TextBookM1aaaa.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM1aaaa.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM2999.html" target="_blank">icap-TextBookM2999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM2999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM2aaaa.html" target="_blank">icap-TextBookM2aaaa.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM2aaaa.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM2bbb.html" target="_blank">icap-TextBookM2bbb.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM2bbb.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM3999.html" target="_blank">icap-TextBookM3999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM3999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM4999.html" target="_blank">icap-TextBookM4999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM4999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM5999.html" target="_blank">icap-TextBookM5999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM5999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM6999.html" target="_blank">icap-TextBookM6999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM6999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM7999.html" target="_blank">icap-TextBookM7999.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/HTML-草稿備份/icap-TextBookM7999.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M1.docx" target="_blank">寺廟管理師 教材M1.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M1.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M2.docx" target="_blank">寺廟管理師 教材M2.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M2.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M3.docx" target="_blank">寺廟管理師 教材M3.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M3.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M4.docx" target="_blank">寺廟管理師 教材M4.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M4.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M5.docx" target="_blank">寺廟管理師 教材M5.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M5.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M6.docx" target="_blank">寺廟管理師 教材M6.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M6.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M7.docx" target="_blank">寺廟管理師 教材M7.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M7.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M8.docx" target="_blank">寺廟管理師 教材M8.docx</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師 教材M8.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師專業教材(草案) - 模組一：寺廟組織治理與法規遵循.pdf" target="_blank">寺廟管理師專業教材(草案) - 模組一：寺廟組織治理與法規遵循.pdf</a></td><td><code>01-寺廟管理師/02-專業講義-模組/Word與PDF/寺廟管理師專業教材(草案) - 模組一：寺廟組織治理與法規遵循.pdf</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-1-1：會計基礎與傳票製作.html" target="_blank">單元教材 M2-1-1：會計基礎與傳票製作.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-1-1：會計基礎與傳票製作.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-1-2：特色捐獻項目之帳務處理.html" target="_blank">單元教材 M2-1-2：特色捐獻項目之帳務處理.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-1-2：特色捐獻項目之帳務處理.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-1-3：財務報表編製與公告.html" target="_blank">單元教材 M2-1-3：財務報表編製與公告.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-1-3：財務報表編製與公告.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-2-1：不動產清冊建立與管理.html" target="_blank">單元教材 M2-2-1：不動產清冊建立與管理.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-2-1：不動產清冊建立與管理.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-2-2：動產(法物)盤點與維護.html" target="_blank">單元教材 M2-2-2：動產(法物)盤點與維護.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-2-2：動產(法物)盤點與維護.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-2-3：年度決算書製作實務.html" target="_blank">單元教材 M2-2-3：年度決算書製作實務.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-2-3：年度決算書製作實務.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-3-1：《文資法》與寺廟資產的關係.html" target="_blank">單元教材 M2-3-1：《文資法》與寺廟資產的關係.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-3-1：《文資法》與寺廟資產的關係.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-3-2：有形文化資產的識別與修繕.html" target="_blank">單元教材 M2-3-2：有形文化資產的識別與修繕.html</a></td><td><code>01-寺廟管理師/02-專業講義-模組/單元教材/單元教材 M2-3-2：有形文化資產的識別與修繕.html</code></td></tr></tbody></table><h3>03-課程地圖（3）</h3><table><tbody><tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/03-課程地圖/icap-Mmap.html" target="_blank">icap-Mmap.html</a></td><td><code>01-寺廟管理師/03-課程地圖/icap-Mmap.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/03-課程地圖/icap-Mmap2.html" target="_blank">icap-Mmap2.html</a></td><td><code>01-寺廟管理師/03-課程地圖/icap-Mmap2.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/03-課程地圖/icap-Mmap999.html" target="_blank">icap-Mmap999.html</a></td><td><code>01-寺廟管理師/03-課程地圖/icap-Mmap999.html</code></td></tr></tbody></table><h3>04-簡報（3）</h3><table><tbody><tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/04-簡報/icapVdemo.html" target="_blank">icapVdemo.html</a></td><td><code>01-寺廟管理師/04-簡報/icapVdemo.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/04-簡報/icapVppt01.html" target="_blank">icapVppt01.html</a></td><td><code>01-寺廟管理師/04-簡報/icapVppt01.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/04-簡報/icapVppt02.html" target="_blank">icapVppt02.html</a></td><td><code>01-寺廟管理師/04-簡報/icapVppt02.html</code></td></tr></tbody></table><h3>05-品質檢核表（4）</h3><table><tbody><tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/05-品質檢核表/icapV72ck.html" target="_blank">icapV72ck.html</a></td><td><code>01-寺廟管理師/05-品質檢核表/icapV72ck.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/05-品質檢核表/icapV72ck01.html" target="_blank">icapV72ck01.html</a></td><td><code>01-寺廟管理師/05-品質檢核表/icapV72ck01.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/05-品質檢核表/icapV72ck02.html" target="_blank">icapV72ck02.html</a></td><td><code>01-寺廟管理師/05-品質檢核表/icapV72ck02.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/05-品質檢核表/icapV72ck03.html" target="_blank">icapV72ck03.html</a></td><td><code>01-寺廟管理師/05-品質檢核表/icapV72ck03.html</code></td></tr></tbody></table><h3>06-行政與營運（8）</h3><table><tbody><tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/0907宮廟管理師.docx" target="_blank">0907宮廟管理師.docx</a></td><td><code>01-寺廟管理師/06-行政與營運/0907宮廟管理師.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/0907宮廟管理師.pdf" target="_blank">0907宮廟管理師.pdf</a></td><td><code>01-寺廟管理師/06-行政與營運/0907宮廟管理師.pdf</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/宮廟管理師 工作進度.docx" target="_blank">宮廟管理師 工作進度.docx</a></td><td><code>01-寺廟管理師/06-行政與營運/宮廟管理師 工作進度.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/宮廟管理師營運獲利視覺化全案.html" target="_blank">宮廟管理師營運獲利視覺化全案.html</a></td><td><code>01-寺廟管理師/06-行政與營運/宮廟管理師營運獲利視覺化全案.html</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/寺廟管理師 協力單位邀請函.docx" target="_blank">寺廟管理師 協力單位邀請函.docx</a></td><td><code>01-寺廟管理師/06-行政與營運/寺廟管理師 協力單位邀請函.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/寺廟管理師V60.docx" target="_blank">寺廟管理師V60.docx</a></td><td><code>01-寺廟管理師/06-行政與營運/寺廟管理師V60.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/寺廟管理師V67.docx" target="_blank">寺廟管理師V67.docx</a></td><td><code>01-寺廟管理師/06-行政與營運/寺廟管理師V67.docx</code></td></tr>
+<tr><td><a href="https://github.com/chatgptcjcu-boop/icap-zhineng-jizhun/blob/main/01-寺廟管理師/06-行政與營運/臺灣道法總會「宮廟管理師」利潤營運中心 (SBU) 專案提案企劃書.pdf" target="_blank">臺灣道法總會「宮廟管理師」利潤營運中心 (SBU) 專案提案企劃書.pdf</a></td><td><code>01-寺廟管理師/06-行政與營運/臺灣道法總會「宮廟管理師」利潤營運中心 (SBU) 專案提案企劃書.pdf</code></td></tr></tbody></table>
+
+<footer class="page-foot">權威依據：勞動部 iCAP 職能基準／課程品質認證作業手冊 · 審查標的：宮廟管理師（icap-zhineng-jizhun）</footer>
+</main>
+</div>
+<script src="data/review-engine.js"></script>
+
+</body>
+</html>

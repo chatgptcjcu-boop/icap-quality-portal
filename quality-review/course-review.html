@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職能導向課程檢核（ADDIE）｜iCAP 品質審查輔導系統</title>
+<style>
+:root {
+  --bg: #0c1222; --sidebar: #151d33; --card: #fff; --text: #1e293b;
+  --muted: #64748b; --border: #e2e8f0; --accent: #7c3aed;
+  --red: #b91c1c; --blue: #1d4ed8; --green: #15803d;
+  --pass: #16a34a; --warn: #ca8a04; --fail: #dc2626;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "PingFang TC", "Noto Sans TC", sans-serif; background: #eef2ff; color: var(--text); }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 250px; background: var(--sidebar); color: #e2e8f0; padding: 1rem 0; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar .brand { font-size: 1rem; color: #fff; padding: 0 1.25rem 1rem; border-bottom: 1px solid #334155; margin-bottom: 0.5rem; line-height: 1.45; }
+.sidebar nav a { display: block; padding: 0.5rem 1.25rem; color: #cbd5e1; text-decoration: none; font-size: 0.88rem; border-left: 3px solid transparent; }
+.sidebar nav a:hover, .sidebar nav a.active { background: #1e293b; color: #fff; border-left-color: var(--accent); }
+.main { flex: 1; padding: 1.25rem 1.75rem 3rem; max-width: 1200px; }
+h2 { margin-top: 0; font-size: 1.45rem; }
+h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+.card { background: var(--card); border-radius: 12px; padding: 1.15rem 1.35rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.65rem; margin: 1rem 0; }
+.stat { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem; text-align: center; }
+.stat .v { font-size: 1.6rem; font-weight: 800; }
+.stat .l { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
+.stat.pass .v { color: var(--pass); }
+.stat.warn .v { color: var(--warn); }
+.stat.fail .v { color: var(--fail); }
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; }
+.badge { display: inline-block; padding: 0.12rem 0.45rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; color: #fff; }
+.badge-critical { background: var(--fail); }
+.badge-aspect { background: #6366f1; }
+.badge-red { background: var(--red); }
+.badge-blue { background: var(--blue); }
+.badge-green { background: var(--green); }
+.score-input { width: 3.5rem; padding: 0.25rem; text-align: center; border: 1px solid var(--border); border-radius: 6px; }
+textarea.note { width: 100%; min-height: 56px; padding: 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.85rem; }
+.btn { padding: 0.45rem 0.95rem; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; margin-right: 0.4rem; margin-top: 0.35rem; }
+.btn:hover { opacity: 0.92; }
+.btn-outline { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+.callout { border-left: 4px solid var(--accent); background: #f5f3ff; padding: 0.75rem 1rem; margin: 1rem 0; font-size: 0.9rem; }
+.callout-red { border-color: var(--red); background: #fef2f2; }
+.callout-blue { border-color: var(--blue); background: #eff6ff; }
+.callout-green { border-color: var(--green); background: #f0fdf4; }
+.meter { height: 10px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 0.35rem 0; }
+.meter > span { display: block; height: 100%; background: linear-gradient(90deg, #7c3aed, #2563eb); border-radius: 999px; transition: width .3s; }
+.captain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.captain-card { border-radius: 10px; padding: 1rem; color: #fff; }
+.captain-card h4 { margin: 0 0 0.5rem; }
+.captain-card ul { margin: 0; padding-left: 1.1rem; font-size: 0.85rem; line-height: 1.5; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.filters input, .filters select { padding: 0.35rem 0.55rem; border: 1px solid var(--border); border-radius: 6px; }
+.doc-row { font-size: 0.82rem; }
+.report-body { font-size: 0.88rem; line-height: 1.65; }
+.report-body h4 { margin: 0.85rem 0 0.35rem; font-size: 0.95rem; }
+.report-body ul, .report-body ol { margin: 0.35rem 0; padding-left: 1.25rem; }
+.report-body p { margin: 0.35rem 0; }
+.report-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+footer.page-foot { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); }
+@media (max-width: 768px) { .layout { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } }
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand">iCAP 品質審查<br><small style="color:#94a3b8;font-weight:400">檢核專家儀表板</small></div>
+<nav><a href="../index.html" style="border-left-color:#f59e0b;color:#fcd34d">← 入口網</a>
+<a href="index.html" class="">儀表板總覽</a>
+<a href="ocs-review.html" class="">職能基準檢核</a>
+<a href="course-review.html" class="active">職能導向課程檢核</a>
+<a href="review-board.html" class="">三隊長審查會議</a>
+<a href="documents.html" class="">宮廟管理師文件庫</a>
+<a href="action-plan.html" class="">補正行動計畫</a>
+<a href="commercial.html" class="">商業接案模組</a></nav>
+</aside>
+<main class="main">
+
+<h2>職能導向課程檢核（ADDIE）</h2>
+<div class="callout">評分：0=嚴重缺失 · 3=部分符合 · 5=完全符合且佐證充分。關鍵項須 ≥4 分。</div>
+<table>
+<thead><tr><th>構面／指標</th><th>要求條件</th><th>審查重點</th><th>宮廟管理師對應</th><th>評分</th><th>意見</th></tr></thead>
+<tbody><tr data-id="A-1" data-track="course">
+<td><span class="badge badge-aspect">分析 Analyze</span><br><small>A 分析 Analyze</small></td>
+<td><strong>A-1</strong> <span class="badge badge-critical">關鍵</span><br>具體職能依據（公告 OCS／職能單元／自行職能分析）</td>
+<td>職能來源明確且與課程目標連結</td>
+<td class="doc-row">01-寺廟管理師/01-輔導計畫書/最新版/icapV74.html</td>
+<td><input type="number" class="score-input" id="course-score-A-1" min="0" max="5" step="1" value="4"></td>
+<td><textarea class="note" id="course-note-A-1" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="A-2" data-track="course">
+<td><span class="badge badge-aspect">分析 Analyze</span><br><small>A 分析 Analyze</small></td>
+<td><strong>A-2</strong> <span class="badge badge-critical">關鍵</span><br>需求分析與學習者分析完整</td>
+<td>目標族群、先備條件、缺口分析</td>
+<td class="doc-row">01-寺廟管理師/01-輔導計畫書/最新版/icapV74.html</td>
+<td><input type="number" class="score-input" id="course-score-A-2" min="0" max="5" step="1" value="4"></td>
+<td><textarea class="note" id="course-note-A-2" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="A-3" data-track="course">
+<td><span class="badge badge-aspect">分析 Analyze</span><br><small>A 分析 Analyze</small></td>
+<td><strong>A-3</strong> <span class="badge badge-critical">關鍵</span><br>課程地圖／學習路徑對應職能單元</td>
+<td>CU-OCSU-單元對照可追溯</td>
+<td class="doc-row">01-寺廟管理師/03-課程地圖/icap-Mmap.html<br>01-寺廟管理師/03-課程地圖/icap-Mmap2.html</td>
+<td><input type="number" class="score-input" id="course-score-A-3" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-A-3" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="D-1" data-track="course">
+<td><span class="badge badge-aspect">設計 Design</span><br><small>D1 設計 Design</small></td>
+<td><strong>D-1</strong> <span class="badge badge-critical">關鍵</span><br>教學目標對應行為指標與職能級別</td>
+<td>目標 SMART 且可評量</td>
+<td class="doc-row">01-寺廟管理師/02-專業講義-模組/HTML-正式版/</td>
+<td><input type="number" class="score-input" id="course-score-D-1" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-D-1" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="D-2" data-track="course">
+<td><span class="badge badge-aspect">設計 Design</span><br><small>D1 設計 Design</small></td>
+<td><strong>D-2</strong> <span class="badge badge-critical">關鍵</span><br>課程大綱／單元結構完整（F2-1/F2-2 等價）</td>
+<td>單元、時數、職能對照齊全</td>
+<td class="doc-row">01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM1.html</td>
+<td><input type="number" class="score-input" id="course-score-D-2" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-D-2" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="D-3" data-track="course">
+<td><span class="badge badge-aspect">設計 Design</span><br><small>D1 設計 Design</small></td>
+<td><strong>D-3</strong> <br>評量設計於設計階段已規劃</td>
+<td>形成性＋總結性評量藍圖</td>
+<td class="doc-row">01-寺廟管理師/05-品質檢核表/icapV72ck01.html</td>
+<td><input type="number" class="score-input" id="course-score-D-3" min="0" max="5" step="1" value="4"></td>
+<td><textarea class="note" id="course-note-D-3" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="DV-1" data-track="course">
+<td><span class="badge badge-aspect">發展 Develop</span><br><small>D2 發展 Develop</small></td>
+<td><strong>DV-1</strong> <span class="badge badge-critical">關鍵</span><br>教材與教學資源完備（M1–M8 模組講義等）</td>
+<td>教材覆蓋所有職能單元</td>
+<td class="doc-row">01-寺廟管理師/02-專業講義-模組/HTML-正式版/icap-TextBookM1.html<br>icap-TextBookM8.html</td>
+<td><input type="number" class="score-input" id="course-score-DV-1" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-DV-1" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="DV-2" data-track="course">
+<td><span class="badge badge-aspect">發展 Develop</span><br><small>D2 發展 Develop</small></td>
+<td><strong>DV-2</strong> <span class="badge badge-critical">關鍵</span><br>師資資格與產業經驗符合要求</td>
+<td>師資表、資歷證明</td>
+<td class="doc-row">01-寺廟管理師/06-行政與營運/</td>
+<td><input type="number" class="score-input" id="course-score-DV-2" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-DV-2" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="DV-3" data-track="course">
+<td><span class="badge badge-aspect">發展 Develop</span><br><small>D2 發展 Develop</small></td>
+<td><strong>DV-3</strong> <br>教學方法與職能內涵類型匹配（K/S/A）</td>
+<td>知識講授、技能演練、態度討論配比</td>
+<td class="doc-row">01-寺廟管理師/02-專業講義-模組/單元教材/</td>
+<td><input type="number" class="score-input" id="course-score-DV-3" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-DV-3" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="I-1" data-track="course">
+<td><span class="badge badge-aspect">實施 Implement</span><br><small>I 實施 Implement</small></td>
+<td><strong>I-1</strong> <span class="badge badge-critical">關鍵</span><br>試教／開課實施紀錄（F4-1 等價）</td>
+<td>簽到、教案、現場照片或紀錄</td>
+<td class="doc-row">01-寺廟管理師/04-簡報/icapVdemo.html</td>
+<td><input type="number" class="score-input" id="course-score-I-1" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-I-1" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="I-2" data-track="course">
+<td><span class="badge badge-aspect">實施 Implement</span><br><small>I 實施 Implement</small></td>
+<td><strong>I-2</strong> <br>iCAP 平台開課與學員資料登錄流程知悉</td>
+<td>平台操作手冊對照</td>
+<td class="doc-row">docs/icap-official/認證專區/</td>
+<td><input type="number" class="score-input" id="course-score-I-2" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-I-2" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="I-3" data-track="course">
+<td><span class="badge badge-aspect">實施 Implement</span><br><small>I 實施 Implement</small></td>
+<td><strong>I-3</strong> <span class="badge badge-critical">關鍵</span><br>課程總時數 ≥ 12 小時</td>
+<td>時數表加總正確</td>
+<td class="doc-row">01-寺廟管理師/03-課程地圖/icap-Mmap.html</td>
+<td><input type="number" class="score-input" id="course-score-I-3" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-I-3" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="E-1" data-track="course">
+<td><span class="badge badge-aspect">評估 Evaluate</span><br><small>E 評估 Evaluate</small></td>
+<td><strong>E-1</strong> <span class="badge badge-critical">關鍵</span><br>評量方式對應教學目標與行為指標</td>
+<td>評量藍圖與職能對照</td>
+<td class="doc-row">01-寺廟管理師/05-品質檢核表/icapV72ck02.html</td>
+<td><input type="number" class="score-input" id="course-score-E-1" min="0" max="5" step="1" value="4"></td>
+<td><textarea class="note" id="course-note-E-1" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="E-2" data-track="course">
+<td><span class="badge badge-aspect">評估 Evaluate</span><br><small>E 評估 Evaluate</small></td>
+<td><strong>E-2</strong> <span class="badge badge-critical">關鍵</span><br>學習成果證據類型明確（作品集、測驗、實作檢核）</td>
+<td>證據可留存備查</td>
+<td class="doc-row">01-寺廟管理師/05-品質檢核表/</td>
+<td><input type="number" class="score-input" id="course-score-E-2" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-E-2" placeholder="審查意見…"></textarea></td>
+</tr>
+<tr data-id="E-3" data-track="course">
+<td><span class="badge badge-aspect">評估 Evaluate</span><br><small>E 評估 Evaluate</small></td>
+<td><strong>E-3</strong> <br>課程自我管考與持續改善機制</td>
+<td>回饋循環、修訂紀錄</td>
+<td class="doc-row">01-寺廟管理師/01-輔導計畫書/歷史版本/</td>
+<td><input type="number" class="score-input" id="course-score-E-3" min="0" max="5" step="1" value="3"></td>
+<td><textarea class="note" id="course-note-E-3" placeholder="審查意見…"></textarea></td>
+</tr></tbody>
+</table>
+<button class="btn" onclick="updateDashboard();alert('已更新總覽分數（請回儀表板查看）')">儲存並更新總覽</button>
+
+<footer class="page-foot">權威依據：勞動部 iCAP 職能基準／課程品質認證作業手冊 · 審查標的：宮廟管理師（icap-zhineng-jizhun）</footer>
+</main>
+</div>
+<script src="data/review-engine.js"></script>
+
+</body>
+</html>
